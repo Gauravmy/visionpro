@@ -1,0 +1,293 @@
+{
+  "_comment": "Spec for tools/build_qc_model.py. 'prompts': text descriptions per class (YOLOE text prompts). 'references': photos with boxes (x1, y1, x2, y2 in pixels) per class (YOLOE visual prompts). 'background': people and scenery the service ignores. 'other_objects': everyday items that are not a supported product; the service reports them as out_of_range so the station can say 'Out of range' instead of forcing them into a product class. Never add smartphone, remote control, cable, envelope, bracelet or cap here: they steal chargers and markers. Add photos of your own items to 'references' and rebuild to adapt the detector.",
+  "classes": [
+    "bottle",
+    "charger",
+    "marker",
+    "burn_mark"
+  ],
+  "prompts": {
+    "bottle": [
+      "bottle",
+      "water bottle",
+      "plastic water bottle",
+      "transparent plastic bottle",
+      "stainless steel water bottle",
+      "steel bottle",
+      "glass bottle",
+      "sports water bottle"
+    ],
+    "charger": [
+      "mobile phone charger",
+      "phone charger adapter",
+      "USB wall charger plug",
+      "white phone charger"
+    ],
+    "marker": [
+      "marker pen",
+      "permanent marker",
+      "whiteboard marker",
+      "highlighter pen",
+      "felt-tip pen"
+    ],
+    "burn_mark": [
+      "burnt black scorch mark",
+      "melted burnt plastic"
+    ]
+  },
+  "background": [
+    "person",
+    "human face",
+    "hand",
+    "door",
+    "clothes",
+    "wardrobe"
+  ],
+  "other_objects": [
+    "tablet computer",
+    "book",
+    "laptop computer",
+    "cup",
+    "mug",
+    "coffee cup",
+    "drinking glass",
+    "bowl",
+    "plate",
+    "spoon",
+    "fork",
+    "knife",
+    "scissors",
+    "keys",
+    "wallet",
+    "eyeglasses",
+    "sunglasses",
+    "wristwatch",
+    "headphones",
+    "earphones",
+    "computer mouse",
+    "computer keyboard",
+    "notebook",
+    "cardboard box",
+    "plastic bag",
+    "backpack",
+    "handbag",
+    "shoe",
+    "ball",
+    "toy",
+    "teddy bear",
+    "apple",
+    "banana",
+    "orange fruit",
+    "food",
+    "soda can",
+    "toothbrush",
+    "comb",
+    "hairbrush",
+    "tape roll",
+    "stapler",
+    "calculator",
+    "ruler",
+    "eraser",
+    "pencil",
+    "ballpoint pen",
+    "lighter",
+    "coin",
+    "flashlight",
+    "umbrella",
+    "candle",
+    "plant",
+    "flower",
+    "lamp",
+    "pillow",
+    "towel",
+    "light bulb"
+  ],
+  "references": [
+    {
+      "image": "bottle-orange.jpg",
+      "class": "bottle",
+      "boxes": [
+        [
+          265,
+          55,
+          550,
+          1010
+        ]
+      ]
+    },
+    {
+      "image": "bottle-pet-clear.jpg",
+      "class": "bottle",
+      "boxes": [
+        [
+          185,
+          100,
+          450,
+          1110
+        ]
+      ]
+    },
+    {
+      "image": "charger-mobile-in-hand.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          870,
+          240,
+          1075,
+          385
+        ]
+      ]
+    },
+    {
+      "image": "charger-brick-cable.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          665,
+          18,
+          810,
+          215
+        ]
+      ]
+    },
+    {
+      "image": "charger-usb-white.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          35,
+          110,
+          905,
+          665
+        ]
+      ]
+    },
+    {
+      "image": "charger-samsung-white.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          216,
+          132,
+          768,
+          1168
+        ]
+      ]
+    },
+    {
+      "image": "charger-samsung-white-2.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          276,
+          120,
+          660,
+          976
+        ]
+      ]
+    },
+    {
+      "image": "charger-magsafe.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          285,
+          140,
+          540,
+          370
+        ]
+      ]
+    },
+    {
+      "image": "charger-webcam-upside-down.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          965,
+          225,
+          1105,
+          415
+        ]
+      ]
+    },
+    {
+      "image": "charger-webcam-overhead.jpg",
+      "class": "charger",
+      "boxes": [
+        [
+          765,
+          250,
+          925,
+          405
+        ]
+      ]
+    },
+    {
+      "image": "marker-whiteboard.jpg",
+      "class": "marker",
+      "boxes": [
+        [
+          55,
+          148,
+          905,
+          285
+        ]
+      ]
+    },
+    {
+      "image": "marker-permanent-pair.jpg",
+      "class": "marker",
+      "boxes": [
+        [
+          0,
+          105,
+          870,
+          272
+        ],
+        [
+          65,
+          300,
+          960,
+          462
+        ]
+      ]
+    },
+    {
+      "image": "marker-highlighter.jpg",
+      "class": "marker",
+      "boxes": [
+        [
+          5,
+          22,
+          940,
+          352
+        ]
+      ]
+    },
+    {
+      "image": "marker-tip-macro.jpg",
+      "class": "marker",
+      "boxes": [
+        [
+          0,
+          0,
+          525,
+          432
+        ]
+      ]
+    },
+    {
+      "image": "burn-charger-internals.jpg",
+      "class": "burn_mark",
+      "boxes": [
+        [
+          470,
+          200,
+          940,
+          690
+        ]
+      ]
+    }
+  ]
+}

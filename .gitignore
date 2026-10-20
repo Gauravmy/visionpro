@@ -1,0 +1,50 @@
+# --- Node / Next.js ---
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
+npm-debug.log*
+
+# --- Environment and credentials (keep .env.example) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Local runtime data: SQLite database and stored inspection images ---
+data/
+*.sqlite3
+*.sqlite3-*
+
+# --- Python inference service ---
+.venv/
+inference/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+htmlcov/
+
+# --- Model files ---
+# Only the runtime detector is versioned, through Git LFS (see .gitattributes).
+# The base model and the MobileCLIP text encoder are build-time downloads from Ultralytics.
+inference/weights/*
+!inference/weights/README.md
+!inference/weights/vocabulary.json
+!inference/weights/references/
+!inference/weights/qc-yoloe.pt
+inference/*.ts
+*.torchscript
+*.onnx
+*_openvino_model/
+
+# --- Logs and local tooling ---
+*.log
+.claude/
+.DS_Store
+Thumbs.db

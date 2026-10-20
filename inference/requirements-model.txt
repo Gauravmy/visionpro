@@ -1,0 +1,7 @@
+# Needed only for the detector. Without these the service runs and reports the
+# detector as unavailable; image-quality checks still work.
+# CPU-only PyTorch (smaller download):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+ultralytics>=8.4
+# CLIP tokenizer for YOLOE text prompts, used only by tools/build_qc_model.py.
+open_clip_torch>=3.0

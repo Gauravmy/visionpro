@@ -1,0 +1,2 @@
+# Runtime detector weights (~71 MB) are stored with Git LFS.
+inference/weights/*.pt filter=lfs diff=lfs merge=lfs -text

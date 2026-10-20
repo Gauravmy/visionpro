@@ -1,0 +1,36 @@
+# Production stack: web (Next.js, port 3000) + inference (FastAPI, internal only).
+#   git lfs pull            # fetch inference/weights/qc-yoloe.pt
+#   docker compose up -d --build
+# The app has no login: expose port 3000 only on a trusted network or behind an authenticating proxy.
+services:
+  inference:
+    build: ./inference
+    restart: unless-stopped
+    environment:
+      VI_MODEL_ID: yoloe-qc
+      VI_MODEL_VERSION: 11l-text-vp-v2
+      VI_IMGSZ: "640"
+      VI_WARMUP_IMGSZ: "480"
+      VI_MAX_UPLOAD_MB: "10"
+    # YOLOE-11l on CPU needs about 2 GB of memory.
+    mem_limit: 3g
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      inference:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      INFERENCE_URL: http://inference:8000
+      INFERENCE_TIMEOUT_MS: "30000"
+      INFERENCE_LIVE_IMGSZ: "480"
+      VI_DATA_DIR: /data
+      VI_MAX_UPLOAD_MB: "10"
+    volumes:
+      - visioninspect-data:/data
+
+volumes:
+  visioninspect-data:

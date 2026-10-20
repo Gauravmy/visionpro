@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- Design tokens ----------
+   Light is the default: a warm, paper-like surface that reads well under
+   factory lighting. Dark is neutral graphite, not navy. Components only use
+   the semantic names below, so both themes come from one set of classes. */
+@theme inline {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --color-shell: var(--shell);
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-raised: var(--raised);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+
+  --color-ink: var(--ink);
+  --color-ink-fg: var(--ink-fg);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-wash: var(--accent-wash);
+  --color-marker: var(--marker);
+
+  --color-pass: var(--pass);
+  --color-pass-wash: var(--pass-wash);
+  --color-reject: var(--reject);
+  --color-reject-wash: var(--reject-wash);
+  --color-review: var(--review);
+  --color-review-wash: var(--review-wash);
+
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
+
+  --shadow-panel: var(--shadow-1);
+  --shadow-pop: var(--shadow-2);
+}
+
+:root {
+  color-scheme: light;
+  --shell: #ebe8e1;
+  --canvas: #f4f2ed;
+  --panel: #fcfbf8;
+  --raised: #efece5;
+  --sunken: #f0ede6;
+  --line: #e0dcd2;
+  --line-strong: #cdc8bc;
+
+  --fg: #18191b;
+  --muted: #55575c;
+  --subtle: #85878c;
+
+  --ink: #18191b;
+  --ink-fg: #fcfbf8;
+  --accent: #2f4fd1;
+  --accent-strong: #2440b3;
+  --accent-ink: #ffffff;
+  --accent-wash: rgb(47 79 209 / 0.08);
+  --marker: #f2c230;
+
+  --pass: #1d7f48;
+  --pass-wash: rgb(29 127 72 / 0.09);
+  --reject: #c8341f;
+  --reject-wash: rgb(200 52 31 / 0.08);
+  --review: #a86a00;
+  --review-wash: rgb(196 128 0 / 0.11);
+
+  --chart-grid: #e7e3da;
+  --chart-axis: #cdc8bc;
+  --chart-label: #85878c;
+
+  --shadow-1: 0 1px 0 rgb(24 25 27 / 0.03);
+  --shadow-2: 0 18px 48px -12px rgb(24 25 27 / 0.28), 0 0 0 1px rgb(24 25 27 / 0.08);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --shell: #0f0f10;
+  --canvas: #141415;
+  --panel: #1a1a1c;
+  --raised: #232326;
+  --sunken: #111112;
+  --line: #2a2a2e;
+  --line-strong: #3a3a3f;
+
+  --fg: #ecebe8;
+  --muted: #a8a7a3;
+  --subtle: #7a7975;
+
+  --ink: #ecebe8;
+  --ink-fg: #141415;
+  --accent: #8ea2ff;
+  --accent-strong: #aab9ff;
+  --accent-ink: #0e1330;
+  --accent-wash: rgb(142 162 255 / 0.1);
+  --marker: #f2c230;
+
+  --pass: #4cc483;
+  --pass-wash: rgb(76 196 131 / 0.1);
+  --reject: #f0705c;
+  --reject-wash: rgb(240 112 92 / 0.1);
+  --review: #e6aa45;
+  --review-wash: rgb(230 170 69 / 0.11);
+
+  --chart-grid: #26262a;
+  --chart-axis: #3a3a3f;
+  --chart-label: #7a7975;
+
+  --shadow-1: none;
+  --shadow-2: 0 24px 60px -12px rgb(0 0 0 / 0.7), 0 0 0 1px #3a3a3f;
+}
+
+html,
+body {
+  background: var(--canvas);
+  color: var(--fg);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--marker);
+  color: #18191b;
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Small caps-style label used for section and field headings */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  background: var(--panel);
+  color: var(--muted);
+}
+
+/* Thin, quiet scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@keyframes vi-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.skeleton {
+  background: var(--raised);
+  border-radius: var(--radius-sm);
+  animation: vi-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes vi-rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: vi-rise 0.22s ease-out both;
+}
+
+@keyframes vi-scan {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+.scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--marker);
+  box-shadow: 0 0 12px 2px rgb(242 194 48 / 0.55);
+  animation: vi-scan 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+dialog[open] {
+  animation: vi-rise 0.16s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Print: reports render on white paper without the app shell ---------- */
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    color-scheme: light;
+    --pass: #1d7f48;
+    --reject: #c8341f;
+    --review: #a86a00;
+    --chart-grid: #ddd;
+    --chart-axis: #bbb;
+    --chart-label: #555;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-area {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .print-area * {
+    color: #111 !important;
+    border-color: #ccc !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .print-area .print-keep-color,
+  .print-area .print-keep-color * {
+    color: inherit !important;
+  }
+  .print-break-avoid {
+    break-inside: avoid;
+  }
+  @page {
+    margin: 14mm;
+  }
+}
