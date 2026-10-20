@@ -50,6 +50,9 @@ class Settings:
         )
     )
     max_upload_bytes: int = field(default_factory=lambda: _int("VI_MAX_UPLOAD_MB", 10) * 1024 * 1024)
+    # Shared secret. When set, every request needs "Authorization: Bearer <token>"
+    # (use it whenever the service is reachable from outside this machine, e.g. through a tunnel).
+    api_token: str | None = field(default_factory=lambda: os.environ.get("VI_API_TOKEN", "").strip() or None)
     cors_origins: tuple[str, ...] = field(
         default_factory=lambda: tuple(
             o.strip() for o in os.environ.get("VI_CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()

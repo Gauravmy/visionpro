@@ -211,3 +211,13 @@ def test_analyze_skips_zoom_out_when_not_thorough(tmp_path):
         body = client.post("/api/analyze", files={"image": ("a.png", _png(_textured()), "image/png")}, data={"thorough": "false"}).json()
     assert len(stub.calls) == 1
     assert body["detection"]["detections"] == []
+
+
+def test_api_token_is_required_when_configured(tmp_path):
+    settings = Settings(model_path=tmp_path / "missing.pt", max_upload_bytes=1024 * 1024, api_token="s3cret-token")
+    state = DetectorState(model_id="test-model", model_version="t1", imgsz=640)
+    with TestClient(create_app(settings, detector=state)) as client:
+        assert client.get("/health").status_code == 401
+        wrong = client.get("/health", headers={"Authorization": "Bearer nope"})
+        assert wrong.status_code == 401 and wrong.json()["error"]["code"] == "UNAUTHORIZED"
+        assert client.get("/health", headers={"Authorization": "Bearer s3cret-token"}).status_code == 200

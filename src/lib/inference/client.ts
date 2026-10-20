@@ -12,7 +12,7 @@ function timeoutMs(): number {
 
 export class InferenceError extends Error {
   constructor(
-    public readonly kind: "unreachable" | "timeout" | "rejected" | "bad_response",
+    public readonly kind: "unreachable" | "timeout" | "rejected" | "bad_response" | "unauthorized",
     message: string,
     public readonly status?: number,
   ) {
@@ -20,15 +20,24 @@ export class InferenceError extends Error {
   }
 }
 
+const UNAUTHORIZED_MESSAGE = "Inference service rejected the API token: INFERENCE_API_TOKEN must equal the service's VI_API_TOKEN.";
+
 async function call(path: string, init: RequestInit, ms: number): Promise<Response> {
+  // Shared secret for a service reachable from outside this machine (e.g. through a tunnel).
+  const token = process.env.INFERENCE_API_TOKEN?.trim();
+  const headers = new Headers(init.headers);
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+  let res: Response;
   try {
-    return await fetch(`${inferenceUrl()}${path}`, { ...init, signal: AbortSignal.timeout(ms), cache: "no-store" });
+    res = await fetch(`${inferenceUrl()}${path}`, { ...init, headers, signal: AbortSignal.timeout(ms), cache: "no-store" });
   } catch (err) {
     if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) {
       throw new InferenceError("timeout", `Inference service did not respond within ${Math.round(ms / 1000)} s.`);
     }
     throw new InferenceError("unreachable", "Inference service is unreachable.");
   }
+  if (res.status === 401) throw new InferenceError("unauthorized", UNAUTHORIZED_MESSAGE, 401);
+  return res;
 }
 
 /** Model input size for live preview frames: about 1.7x faster than 640 on CPU. Stored inspections use the service default. */

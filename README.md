@@ -255,6 +255,8 @@ secrets are required.
 | `VI_IMGSZ` | `640` | inference: input size for stored inspections |
 | `VI_WARMUP_IMGSZ` | `480` | inference: extra sizes warmed up at start |
 | `VI_CORS_ORIGINS` | `http://localhost:3000` | inference |
+| `VI_API_TOKEN` / `INFERENCE_API_TOKEN` | unset | inference / web: shared secret (`Authorization: Bearer`); set both to the same value when the service is exposed |
+| `VI_BASIC_AUTH_USER` / `VI_BASIC_AUTH_PASSWORD` | unset | web: site login (HTTP Basic Auth) when both are set |
 
 In-app **Settings** cover the default product profile, image retention (store images on/off,
 delete after N days), default export format and whether CSV exports include bounding boxes.
@@ -299,6 +301,27 @@ process manager (systemd, pm2, NSSM on Windows).
 
 On platforms that clone the repository themselves, make sure Git LFS files are fetched
 (GitHub's free LFS quota is 1 GB of bandwidth per month, about 14 clones of the weights).
+
+### Deploying to Render (free plan) with inference on the station PC
+
+Render's free instance has 512 MB of memory; the detector peaks at ~800 MB, so only the web app
+runs on Render (`render.yaml`) and the inference service stays on the station PC, reached through
+a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+and protected by a shared token.
+
+1. On the station PC, put a long random `VI_API_TOKEN` in `.env.local` (git-ignored), plus the
+   same value as `INFERENCE_API_TOKEN` so the local web app keeps working. Restart `npm run inference`.
+2. `cloudflared tunnel --url http://localhost:8000` prints a public `https://….trycloudflare.com`
+   URL (a quick tunnel: free, no account, but the URL changes every time it restarts; a named
+   tunnel on a Cloudflare-managed domain keeps a fixed URL).
+3. In Render: **New → Blueprint**, pick this repository, then fill in the four `sync: false`
+   variables: `INFERENCE_URL` (the tunnel URL), `INFERENCE_API_TOKEN` (same token),
+   `VI_BASIC_AUTH_USER` and `VI_BASIC_AUTH_PASSWORD` (site login).
+
+Limits on the free plan: the instance sleeps after 15 minutes idle (about a minute to wake);
+the filesystem is ephemeral, so **inspection records and images are lost on every restart,
+redeploy or sleep**; detection works only while the station PC, the inference service and the
+tunnel are running. The station PC's own `npm run dev` keeps its local, persistent history.
 
 ## Security notes
 

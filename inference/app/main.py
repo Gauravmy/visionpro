@@ -14,6 +14,7 @@ paths and tracebacks are never returned to clients.
 
 from __future__ import annotations
 
+import hmac
 import logging
 import time
 from contextlib import asynccontextmanager
@@ -53,11 +54,25 @@ def create_app(settings: Settings | None = None, detector: DetectorState | None 
 
     app = FastAPI(title="VisionInspect Pro Inference", version=SERVICE_VERSION, lifespan=lifespan)
     app.state.settings = settings
+    if settings.api_token:
+        expected = f"Bearer {settings.api_token}".encode()
+
+        @app.middleware("http")
+        async def _require_token(request: Request, call_next):
+            if request.method != "OPTIONS":
+                given = request.headers.get("authorization", "").encode()
+                if not hmac.compare_digest(given, expected):
+                    return JSONResponse(
+                        status_code=401,
+                        content={"error": {"code": "UNAUTHORIZED", "message": "Missing or invalid API token."}},
+                    )
+            return await call_next(request)
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
         allow_methods=["GET", "POST"],
-        allow_headers=["Content-Type"],
+        allow_headers=["Content-Type", "Authorization"],
     )
 
     @app.exception_handler(ApiError)

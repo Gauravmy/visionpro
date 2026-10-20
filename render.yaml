@@ -1,0 +1,41 @@
+# Render Blueprint: the Next.js web app on Render's FREE plan.
+# The inference service is NOT deployed here: YOLOE + PyTorch peaks at ~800 MB of memory,
+# above the free instance's 512 MB. It runs on the station PC and is reached through a
+# Cloudflare Tunnel, protected by a shared token (see "Deploying to Render" in README.md).
+#
+# Free-plan limits: the instance sleeps after 15 minutes without traffic (about a minute to
+# wake), and the filesystem is ephemeral, so the SQLite database and stored images under
+# ./data are lost on every restart, redeploy or sleep.
+services:
+  - type: web
+    name: visioninspect-web
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    autoDeployTrigger: commit
+    # --ignore-scripts: use better-sqlite3's bundled linux-x64 binary instead of npm's implicit
+    # node-gyp build; then run the only install scripts the project needs.
+    buildCommand: npm ci --ignore-scripts && npm rebuild esbuild unrs-resolver && npm run build
+    startCommand: npx next start -H 0.0.0.0 -p $PORT
+    envVars:
+      - key: NODE_VERSION
+        value: "22.19.0"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      # Public HTTPS URL of the tunnel to the inference service, e.g. https://xxxx.trycloudflare.com
+      - key: INFERENCE_URL
+        sync: false
+      # Same value as VI_API_TOKEN on the station PC. Set in the Render dashboard only.
+      - key: INFERENCE_API_TOKEN
+        sync: false
+      # Site login (the app has no accounts). Set both in the Render dashboard.
+      - key: VI_BASIC_AUTH_USER
+        sync: false
+      - key: VI_BASIC_AUTH_PASSWORD
+        sync: false
+      # The round trip goes Render -> Cloudflare -> station PC, so allow more time than locally.
+      - key: INFERENCE_TIMEOUT_MS
+        value: "60000"
+      - key: INFERENCE_LIVE_IMGSZ
+        value: "480"
